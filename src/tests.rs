@@ -1,7 +1,7 @@
 #[cfg(test)]
-use crate::{Operation, parse_program, Interpreter};
-#[cfg(test)]
 use crate::interpreter::Ops;
+#[cfg(test)]
+use crate::{parse_program, Interpreter, Operation};
 
 #[test]
 fn test_raw_program() {

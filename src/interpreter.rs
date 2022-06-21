@@ -27,7 +27,7 @@ pub enum Ops {
 #[derive(Clone)]
 pub struct Operation {
     pub op: Ops,
-    pub args: Vec<i32>
+    pub args: Vec<i32>,
 }
 
 pub struct Interpreter {
@@ -38,7 +38,11 @@ pub struct Interpreter {
 
 impl Interpreter {
     pub fn new(sequence: Vec<Operation>) -> Self {
-        Self{ stack: vec![], sequence, current_index: 0 }
+        Self {
+            stack: vec![],
+            sequence,
+            current_index: 0,
+        }
     }
 
     pub fn compile(&mut self) {
@@ -52,26 +56,30 @@ impl Interpreter {
     fn match_actions(&mut self, element: Operation) {
         let action: &Ops = &element.op;
         match action {
-            Ops::ADD =>   { self.ab_op(|a, b| b + a) },
-            Ops::SUB =>   { self.ab_op(|a, b| b - a) },
-            Ops::MULT =>  { self.ab_op(|a, b| b * a) },
-            Ops::DIV =>   { self.ab_op(|a, b| b / a) },
-            Ops::MOD =>   { self.ab_op(|a, b| b % a) },
-            Ops::EQUAL => { self.ab_op(|a, b| (a == b) as i32) },
-            Ops::LT =>    { self.ab_op(|a, b| (b < a) as i32) },
-            Ops::GT =>    { self.ab_op(|a, b| (b > a) as i32) },
-            Ops::IF =>    { self.conditional_jump(&element) }
-            Ops::END =>   { self.unconditional_jump(&element) }
-            Ops::DO =>    { self.conditional_jump(&element) }
+            Ops::ADD => self.ab_op(|a, b| b + a),
+            Ops::SUB => self.ab_op(|a, b| b - a),
+            Ops::MULT => self.ab_op(|a, b| b * a),
+            Ops::DIV => self.ab_op(|a, b| b / a),
+            Ops::MOD => self.ab_op(|a, b| b % a),
+            Ops::EQUAL => self.ab_op(|a, b| (a == b) as i32),
+            Ops::LT => self.ab_op(|a, b| (b < a) as i32),
+            Ops::GT => self.ab_op(|a, b| (b > a) as i32),
+            Ops::IF => self.conditional_jump(&element),
+            Ops::END => self.unconditional_jump(&element),
+            Ops::DO => self.conditional_jump(&element),
             Ops::WHILE => {}
-            Ops::PUSH =>  { self.push(&element) },
-            Ops::DUP =>   { self.dup() },
-            Ops::DUP2 =>  { self.dup2() },
-            Ops::SWAP =>  { self.swap() },
-            Ops::DROP =>  { self.stack.pop(); },
-            Ops::PRINT => { self.print() },
-            Ops::CLEAR => { println!("\x1B[2J\x1B[1;1H") },
-            Ops::QUIT =>  { exit(0) },
+            Ops::PUSH => self.push(&element),
+            Ops::DUP => self.dup(),
+            Ops::DUP2 => self.dup2(),
+            Ops::SWAP => self.swap(),
+            Ops::DROP => {
+                self.stack.pop();
+            }
+            Ops::PRINT => self.print(),
+            Ops::CLEAR => {
+                println!("\x1B[2J\x1B[1;1H")
+            }
+            Ops::QUIT => exit(0),
             // v => { panic!("{:?} is not implemented yet", v) }
         }
     }
@@ -122,12 +130,16 @@ impl Interpreter {
     fn conditional_jump(&mut self, element: &Operation) {
         assert!(self.stack.len() > 0);
         let condition: bool = self.stack.pop().unwrap() != 0;
-        if condition { return; }
+        if condition {
+            return;
+        }
         self.current_index += element.args[0];
     }
 
     fn unconditional_jump(&mut self, element: &Operation) {
-        if element.args.len() == 0 { return }
+        if element.args.len() == 0 {
+            return;
+        }
         self.current_index += element.args[0];
     }
 }

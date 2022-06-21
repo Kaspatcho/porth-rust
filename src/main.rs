@@ -1,18 +1,18 @@
-use std::fs::read_to_string as readfile;
 use std::env::args;
+use std::fs::read_to_string as readfile;
 
-mod tests;
 mod interpreter;
-use interpreter::{ Operation, Interpreter };
+mod tests;
+use interpreter::{Interpreter, Operation};
 mod lexer;
 use lexer::parse_program;
 
 fn main() {
     let filename: String = match args().nth(1) {
-        Some(s) => { s },
+        Some(s) => s,
         _ => {
             println!("ERRO! digite o nome de um arquivo");
-            return
+            return;
         }
     };
     let file_text = readfile(filename).unwrap();
