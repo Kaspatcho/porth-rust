@@ -19,6 +19,9 @@ pub enum Ops {
     DO,
     PUSH,
     DUP,
+    DUP2,
+    SWAP,
+    DROP,
 }
 
 #[derive(Clone)]
@@ -63,6 +66,9 @@ impl Interpreter {
             Ops::WHILE => {}
             Ops::PUSH =>  { self.push(&element) },
             Ops::DUP =>   { self.dup() },
+            Ops::DUP2 =>  { self.dup2() },
+            Ops::SWAP =>  { self.swap() },
+            Ops::DROP =>  { self.stack.pop(); },
             Ops::PRINT => { self.print() },
             Ops::CLEAR => { println!("\x1B[2J\x1B[1;1H") },
             Ops::QUIT =>  { exit(0) },
@@ -86,6 +92,24 @@ impl Interpreter {
         let a = self.stack.pop().unwrap();
         self.stack.push(a);
         self.stack.push(a);
+    }
+
+    fn dup2(&mut self) {
+        assert!(self.stack.len() > 1);
+        let a = self.stack.pop().unwrap();
+        let b = self.stack.pop().unwrap();
+        self.stack.push(b);
+        self.stack.push(a);
+        self.stack.push(b);
+        self.stack.push(a);
+    }
+
+    fn swap(&mut self) {
+        assert!(self.stack.len() > 0);
+        let a = self.stack.pop().unwrap();
+        let b = self.stack.pop().unwrap();
+        self.stack.push(a);
+        self.stack.push(b);
     }
 
     fn print(&mut self) {
