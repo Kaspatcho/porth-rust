@@ -14,6 +14,7 @@ fn match_operations(token: &str) -> Operation {
         "clear" => { (Ops::CLEAR, vec![]) },
         "if" => { (Ops::IF, vec![]) },
         "end" => { (Ops::END, vec![]) },
+        "dup" => { (Ops::DUP, vec![]) },
         v if matches!(v.parse::<i32>(), Ok(_)) => {
             (Ops::PUSH, vec![v.parse::<i32>().unwrap()])
         },

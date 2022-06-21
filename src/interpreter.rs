@@ -15,6 +15,7 @@ pub enum Ops {
     IF,
     END,
     PUSH,
+    DUP,
 }
 
 #[derive(Clone)]
@@ -55,6 +56,7 @@ impl Interpreter {
             Ops::IF => { self.jump(&element) }
             Ops::END => {  }
             Ops::PUSH => { self.push(&element) },
+            Ops::DUP => { self.dup() },
             Ops::PRINT => { self.print() },
             Ops::CLEAR => { println!("\x1B[2J\x1B[1;1H") },
             Ops::QUIT => { exit(0) },
@@ -71,6 +73,13 @@ impl Interpreter {
 
     fn push(&mut self, element: &Operation) {
         self.stack.push(element.args[0]);
+    }
+
+    fn dup(&mut self) {
+        assert!(self.stack.len() > 0);
+        let a = self.stack.pop().unwrap();
+        self.stack.push(a);
+        self.stack.push(a);
     }
 
     fn print(&mut self) {
