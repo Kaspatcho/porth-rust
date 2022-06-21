@@ -6,6 +6,7 @@ pub enum Ops {
     SUB,
     MULT,
     DIV,
+    MOD,
     EQUAL,
     LT,
     GT,
@@ -48,22 +49,23 @@ impl Interpreter {
     fn match_actions(&mut self, element: Operation) {
         let action: &Ops = &element.op;
         match action {
-            Ops::ADD =>  { self.ab_op(|a, b| b + a) },
-            Ops::SUB =>  { self.ab_op(|a, b| b - a) },
+            Ops::ADD =>   { self.ab_op(|a, b| b + a) },
+            Ops::SUB =>   { self.ab_op(|a, b| b - a) },
             Ops::MULT =>  { self.ab_op(|a, b| b * a) },
-            Ops::DIV =>  { self.ab_op(|a, b| b / a) },
-            Ops::EQUAL =>  { self.ab_op(|a, b| (a == b) as i32) },
-            Ops::LT =>  { self.ab_op(|a, b| (b < a) as i32) },
-            Ops::GT =>  { self.ab_op(|a, b| (b > a) as i32) },
-            Ops::IF => { self.conditional_jump(&element) }
-            Ops::END => { self.unconditional_jump(&element) }
-            Ops::DO => { self.conditional_jump(&element) }
-            Ops::WHILE => {  }
-            Ops::PUSH => { self.push(&element) },
-            Ops::DUP => { self.dup() },
+            Ops::DIV =>   { self.ab_op(|a, b| b / a) },
+            Ops::MOD =>   { self.ab_op(|a, b| b % a) },
+            Ops::EQUAL => { self.ab_op(|a, b| (a == b) as i32) },
+            Ops::LT =>    { self.ab_op(|a, b| (b < a) as i32) },
+            Ops::GT =>    { self.ab_op(|a, b| (b > a) as i32) },
+            Ops::IF =>    { self.conditional_jump(&element) }
+            Ops::END =>   { self.unconditional_jump(&element) }
+            Ops::DO =>    { self.conditional_jump(&element) }
+            Ops::WHILE => {}
+            Ops::PUSH =>  { self.push(&element) },
+            Ops::DUP =>   { self.dup() },
             Ops::PRINT => { self.print() },
             Ops::CLEAR => { println!("\x1B[2J\x1B[1;1H") },
-            Ops::QUIT => { exit(0) },
+            Ops::QUIT =>  { exit(0) },
             // v => { panic!("{:?} is not implemented yet", v) }
         }
     }
