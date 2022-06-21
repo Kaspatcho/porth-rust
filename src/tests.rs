@@ -62,3 +62,15 @@ fn test_lexer_if() {
 
     assert_eq!(i.stack, vec![1]);
 }
+
+#[test]
+fn test_lexer_for() {
+    let test = String::from("1 while dup 5 < do dup 1 + end");
+    let program: Vec<Operation> = parse_program(test);
+
+    let mut i = Interpreter::new(program.clone());
+
+    i.compile();
+
+    assert_eq!(i.stack, vec![1, 2, 3, 4, 5]);
+}

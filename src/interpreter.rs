@@ -14,6 +14,8 @@ pub enum Ops {
     QUIT,
     IF,
     END,
+    WHILE,
+    DO,
     PUSH,
     DUP,
 }
@@ -46,15 +48,17 @@ impl Interpreter {
     fn match_actions(&mut self, element: Operation) {
         let action: &Ops = &element.op;
         match action {
-            Ops::ADD =>  { self.ab_op(|a, b| a + b) },
-            Ops::SUB =>  { self.ab_op(|a, b| a - b) },
-            Ops::MULT =>  { self.ab_op(|a, b| a * b) },
-            Ops::DIV =>  { self.ab_op(|a, b| a / b) },
+            Ops::ADD =>  { self.ab_op(|a, b| b + a) },
+            Ops::SUB =>  { self.ab_op(|a, b| b - a) },
+            Ops::MULT =>  { self.ab_op(|a, b| b * a) },
+            Ops::DIV =>  { self.ab_op(|a, b| b / a) },
             Ops::EQUAL =>  { self.ab_op(|a, b| (a == b) as i32) },
-            Ops::LT =>  { self.ab_op(|a, b| (a < b) as i32) },
-            Ops::GT =>  { self.ab_op(|a, b| (a > b) as i32) },
-            Ops::IF => { self.jump(&element) }
-            Ops::END => {  }
+            Ops::LT =>  { self.ab_op(|a, b| (b < a) as i32) },
+            Ops::GT =>  { self.ab_op(|a, b| (b > a) as i32) },
+            Ops::IF => { self.conditional_jump(&element) }
+            Ops::END => { self.unconditional_jump(&element) }
+            Ops::DO => { self.conditional_jump(&element) }
+            Ops::WHILE => {  }
             Ops::PUSH => { self.push(&element) },
             Ops::DUP => { self.dup() },
             Ops::PRINT => { self.print() },
@@ -89,11 +93,15 @@ impl Interpreter {
         println!("{}", a);
     }
 
-    fn jump(&mut self, element: &Operation) {
+    fn conditional_jump(&mut self, element: &Operation) {
         assert!(self.stack.len() > 0);
         let condition: bool = self.stack.pop().unwrap() != 0;
-        if !condition {
-            self.current_index += element.args[0];
-        }
+        if condition { return; }
+        self.current_index += element.args[0];
+    }
+
+    fn unconditional_jump(&mut self, element: &Operation) {
+        if element.args.len() == 0 { return }
+        self.current_index += element.args[0];
     }
 }

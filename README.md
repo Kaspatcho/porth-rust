@@ -2,5 +2,5 @@ simpler version of [Porth](https://gitlab.com/tsoding/porth) programming languag
 
 ## get started
 ```sh
-$ cargo run test.porth
+$ cargo run examples/while.porth
 ```

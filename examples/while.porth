@@ -1,0 +1,1 @@
+1 while dup 11 < do dup print 1 + end
