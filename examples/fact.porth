@@ -1,0 +1,6 @@
+1 7 while dup 1 > do
+  swap 2dup drop * swap
+  1 -
+end
+
+drop print
